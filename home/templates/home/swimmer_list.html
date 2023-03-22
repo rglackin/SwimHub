@@ -1,0 +1,55 @@
+{%extends 'home/master.html'%}
+{% load static %}
+{% load render_table from django_tables2 %}
+{%block nav_item_swimmer_list%}active
+{%endblock %}
+{%block main%}
+<div class="container main">
+    <h1>Select Swimmer</h1>
+    <div class="row">
+        <div class="col-8" id='details'>
+            {%if swimmers_list %}
+            {% render_table table %}
+            {% else %}
+            <p>No swimmers are available</p>
+            {% endif %}
+        </div>
+        <div class="col-4 card shadow p-2 h-100">
+            <h3>Search</h3>
+            <form action="{% url 'home:swimmers' %}" method="get">
+                <p>First Name: <span><input name="fname" type="text" placeholder="Search..." data-toggle="tooltip"
+                            data-placement="right" title="Search for a First name"></span></p>
+                <p>Last Name: <span><input name="lname" type="text" placeholder="Search..." data-toggle="tooltip"
+                            data-placement="right" title="Search for a Last name"></span></p>
+                <button type="submit" class="btn-primary btn">Search</button>
+                <a class="btn-secondary btn" href="{%url 'home:swimmers'%}">Clear Filters</a>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    $(document).ready(function ($) {
+        $("tbody tr").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+<style>
+    a {
+        color: white;
+    }
+
+    table.table thead th.asc {
+        background: url("{%static 'home/svg/sort_asc.svg' %}") no-repeat center right,
+        #343a40;
+    }
+
+    table.table thead th.desc {
+        background: url("{%static 'home/svg/sort_desc.svg' %}") no-repeat center right,
+        #343a40;
+    }
+</style>
+{%endblock%}

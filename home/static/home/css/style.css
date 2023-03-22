@@ -1,0 +1,38 @@
+#header {
+  background-color: lightblue;
+  border-style: solid;
+}
+
+.navbar {
+
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  width: -webkit-fill-available;
+  z-index: 100;
+}
+
+.main {
+  padding-left: 4rem;
+  padding-top: 1rem;
+}
+
+.sidebar {
+  width: 4.5rem;
+  position: fixed;
+  height: 100%;
+
+  background-color: rgb(239, 239, 240);
+  z-index: 99;
+}
+
+ol {
+  padding-inline-start: 0px;
+  font-weight: bolder;
+}
+
+ol li p {
+  font-weight: normal;
+}
+

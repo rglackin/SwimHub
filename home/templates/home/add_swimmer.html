@@ -1,0 +1,60 @@
+{%extends 'home/master.html'%}
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<body>
+    {%block nav_item_add_swimmer%}active
+    {%endblock %}
+    {%block main%}
+    <div class="container main">
+        <div class="row">
+            <div class="col-5 p-10">
+                <h2>Add Swimmer</h1>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button class="btn btn-primary" type="submit" value="view" name="view">Save and View</button>
+                                <button class="btn btn-primary" type="submit" value="continue" name="continue">Save and Add Another</button>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-7 p-10">
+                <h2>Recently Added Swimmers</h1>
+                    <div class="card shadow">
+                        <div class="card-body table-responsive">
+                            <table class="table table-striped shadow table-hover">
+                                <thead class="thead-dark">
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Date Of Birth</th>
+                                    <th scope="col"></th>
+                                </thead>
+                                <tbody>
+                                    {%for swimmer in prevAdded%}
+                                    <tr>
+                                        <td>
+                                            {{swimmer.first_name}} {{swimmer.last_name}} </td>
+                                        <td>
+                                            {{swimmer.dob}} </td>
+                                        <td>
+                                            <a href="{{swimmer.get_absolute_url}}">
+                                                <button type="button" class="btn btn-primary" href="">View</button>
+                                            </a>     
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    {%endblock%}
+</body>
+
+</html>

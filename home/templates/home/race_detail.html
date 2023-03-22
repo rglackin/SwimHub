@@ -1,0 +1,163 @@
+{%extends 'home/master.html'%}
+{% load static %}
+{% load render_table from django_tables2 %}
+{%block nav_item_comp%}active
+{%endblock %}
+{%block main%}
+<div class="container main">
+    <div class="card-deck">
+        <div class="card shadow p-2">
+            <div class="card-header bg-white">
+                <h3>Race</h3>
+            </div>
+            <div class="card-body">
+                <a class="btn btn-primary mt-2 w-100" href="{% url 'home:race_update' race.pk%}">Update Race
+                    Details </a>
+
+                <button type="button" class="btn btn-danger mt-2 w-100" data-toggle="modal"
+                    data-target="#deleteModal{{race.pk}}">
+                    Delete Race
+                </button>
+                <a class="btn-secondary btn mt-2 w-100" href="{%url 'home:comp_detail' race.competition.pk%}">Back</a>
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal{{race.pk}}" tabindex="-1" role="dialog"
+                    aria-labelledby="deleteModalLabel{{race.pk}}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{race.pk}}">Are You Sure You
+                                    Want To Delete This Race?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{% url 'home:delete_race' race.pk %}" type="button"
+                                    class="btn btn-primary">Yes, Delete</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow p-2">
+            <div class="card-header bg-white">
+                <h3>Race Details</h3>
+            </div>
+            <div class="card-body">
+                <p><b class="text-secondary">Competition:</b> <a href="{% url 'home:comp_detail' race.competition.pk %}">{{ race.competition.comp_name }}</a></p>
+                <p><b class="text-secondary">Distance:</b> {{ race.distance }}m</p>
+                <p><b class="text-secondary">Stroke Type:</b> {{ race.strokeType }}</p>
+                <p><b class="text-secondary">Age Range:</b> {{race.age_range_lower}} - {{race.age_range_upper}}</p>
+            </div>
+        </div>
+        <div class="card shadow p-2 ">
+            <div class="card-header bg-white text-center">
+                <h3>Swimmers entered in Race</h3>
+            </div>
+            <div class="card-body align-items-center d-flex justify-content-center">
+                <h1 class="display-1">{{race.swimmers.all.count}}</h1>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="card-group">
+
+        <div class="card shadow p-3">
+            
+        </div>
+        <div class="card shadow p-3">
+            <div class="card-body">
+                <!-- Modal Trigger -->
+                <button type="button" class="btn btn-primary mt-2 w-100" data-toggle="modal"
+                    data-target="#race_swimmerModal">
+                    Enter Swimmers in Race
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="race_swimmerModal" tabindex="-1" role="dialog" aria-labelledby="race_swimmerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="race_swimmerModalLabel">Enter Swimmers</h5>
+                                
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {%if eligible_swimmers%}
+                                <p>Swimmers are displayed in order of fastest personal best.</p>
+                                <form method="post" action="{%url 'home:race_detail' race.id%}">
+                                    {% csrf_token %}
+                                    <table class="table card-body table-striped mb-1 ">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Personal Best</th>
+                                                <th>Most Recent Time</th>
+                                                <th></th>
+                                            </tr>
+                                            {{race_swimmer_form.competition}}
+                                        <tbody>
+                                            {% for choice in race_swimmer_form.swimmers %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                {{ choice.choice_label|safe }}
+                                                
+                                                <td>{{ choice.tag }}</td>
+                                            </tr>
+                                            
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <button class="btn btn-primary" type="submit" value="view" name="view">Save</button>
+                                </form>
+                                {%else%}
+                                <p>No eligible swimmers found.</p>
+                                {%endif%}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {%if swimmers%}
+    <div class="card table-responsive shadow">
+        <!---->
+
+        <table class="table card-body table-striped mb-0 table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="sortable">Swimmer</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in swimmers %}
+                <tr id="swimmer-table" data-href='{{s.get_absolute_url}}'>
+                    <td>{{s}}</td>
+
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+    {%else%}
+    <p>No swimmers entered in race</p>
+    {%endif%}
+</div>
+<script>
+    $(document).ready(function ($) {
+        $("#swimmer-table").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+{%endblock %}

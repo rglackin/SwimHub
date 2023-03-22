@@ -1,0 +1,40 @@
+{%extends 'home/master.html'%}
+{% load static %}
+{% load render_table from django_tables2 %}
+{%block nav_item_comp%}active
+{%endblock %}
+{%block main%}
+<div class="container main ">
+    <div class="card-deck mb-3">
+        <div class="card bg-primary text-white shadow ">
+            <a class="btn btn-primary h-100" href="{% url 'home:comp_list' %}?status=upcoming_ongoing">
+                <div class="card-body text-center">
+                    <h3>Upcoming/Ongoing Competitions</h3>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-primary text-white shadow ">
+            <a class="btn btn-primary h-100" href="{% url 'home:comp_list' %}?status=finished">
+                <div class="card-body text-center">
+                    <h3>Previous Competitions</h3>
+                </div>
+            </a>
+        </div>
+        <div class="card bg-primary text-white shadow ">
+            <a class="btn btn-primary h-100" href="{%url 'home:comp_create' %}">
+                <div class="card-body text-center">
+                    <h3>Schedule Competition</h3>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow p-4 w-75 mx-auto ">
+        <div class="card-header text-center ">
+            <h3>Competition Calendar</h3>
+        </div>
+        <div class="card-body p-0">  
+        </div>
+    </div>
+</div>
+{%endblock %}

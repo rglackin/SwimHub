@@ -1,0 +1,29 @@
+{%extends 'home/master.html'%}
+{% load static %}
+{% load render_table from django_tables2 %}
+{%block nav_item_comp%}active
+{%endblock %}
+{%block main%}
+<div class="container main">
+
+    <h1>Select Competition</h1>
+    <div class="row">
+        <div class="col-8" id='details'>
+            {%if comp_list %}
+            {% render_table table %}
+            {% else %}
+            <p>No Competitions matching your request are available</p>
+            {% endif %}
+        </div>
+    </div>
+    <a class="btn-secondary btn mt-2 " href="{%url 'home:comp_menu' %}">Back</a>
+</div>
+<script>
+
+    $(document).ready(function ($) {
+        $("tbody tr").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+{%endblock%}

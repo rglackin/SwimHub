@@ -1,0 +1,62 @@
+{%extends 'home/master.html'%}
+{% load static %}
+{% load render_table from django_tables2 %}
+{%block nav_item_comp%}active
+{%endblock %}
+{%block main%}
+<div class="container main ">
+    <div class="row">
+        <div class="col-5 p-10">
+            <h2>Schedule Competition</h1>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-primary" type="submit" value="view" name="view">Save</button>      
+                        </form>
+                    </div>
+                </div>
+                <a class="btn-secondary btn mt-2 w-10" href="{%url 'home:comp_menu' %}">Back</a>
+        </div>
+        <div class="col-7 p-10">
+            <h2>Recently Scheduled Competitons</h1>
+                <div class="card shadow">
+                    <div class="card-body table-responsive">
+                        <table class="table table-striped shadow table-hover">
+                            <thead class="thead-dark">
+                                <th scope="col">Competition Name</th>
+                                <th scope="col">Competition Location</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col"></th>
+                            </thead>
+                            <tbody>
+                                {%for comp in prevAdded%}
+                                <tr>
+                                    <td>
+                                        {{comp.comp_name}} </td>
+                                    <td>
+                                        {{comp.location}} </td>
+                                    <td>
+                                        {{comp.start_date}} </td>
+                                    <td>
+                                        {{comp.end_date}} </td>
+                                    <td>
+                                        <a href="{{comp.get_absolute_url}}">
+                                            <button type="button" class="btn btn-primary" href="">View</button>
+                                        </a>     
+                                    </td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                
+        </div>
+    </div>
+</div>
+
+{%endblock %}

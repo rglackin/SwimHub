@@ -1,0 +1,160 @@
+{%extends 'home/master.html'%}
+{% load static %}
+{% load render_table from django_tables2 %}
+{%block nav_item_comp%}active
+{%endblock %}
+{%block main%}
+<div class="container main">
+    <div class="card-deck">
+        <div class="card shadow p-2">
+            <div class="card-header bg-white">
+                <h3>Competition</h3>
+            </div>
+            <div class="card-body">
+                <a class="btn btn-primary mt-2 w-100" href="{% url 'home:comp_update' competition.id %}">Update Competition
+                    Details </a>
+
+                <button type="button" class="btn btn-danger mt-2 w-100" data-toggle="modal"
+                    data-target="#deleteModal{{competition.pk}}">
+                    Delete Competition
+                </button>
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal{{competition.pk}}" tabindex="-1" role="dialog"
+                    aria-labelledby="deleteModalLabel{{competition.pk}}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{competition.pk}}">Are You Sure You
+                                    Want To Delete This Competition?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{% url 'home:delete_competition' competition.pk %}" type="button"
+                                    class="btn btn-primary">Yes, Delete</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn-secondary btn mt-2 w-100" href="{%url 'home:comp_menu' %}">Back</a>
+            </div>
+        </div>
+        <div class="card shadow p-2">
+            <div class="card-header bg-white">
+                <h3>Competition Details</h3>
+            </div>
+            <div class="card-body">
+                <p><b class="text-secondary">Competition Name:</b> {{ competition.comp_name }}</p>
+                <p><b class="text-secondary">Location:</b> {{ competition.location }}</p>
+                <p><b class="text-secondary">Start Date:</b> {{ competition.start_date }}</p>
+                <p><b class="text-secondary">End Date:</b> {{competition.end_date}}</p>
+                <p><b class="text-secondary">Status:</b> {{competition.get_status|safe }}</p>
+            </div>
+        </div>
+        <div class="card shadow p-2 ">
+            <div class="card-header bg-white text-center">
+                <h3>Races entered at competition</h3>
+            </div>
+            <div class="card-body align-items-center d-flex justify-content-center">
+                <h1 class="display-1">{{competition.race_set.count}}</h1>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="card-group">
+
+        <div class="card shadow p-3">
+            <h3>Filter</h3>
+            <form action="{% url 'home:comp_detail' competition.id %}" method="get">
+
+                <div class="p-2">
+                    <label for="strokeType">Stroke </label><select id="strokeType" name="strokeType">
+                        <option value="">Select a Stroke</option>
+                        <option value="FC">Front Crawl</option>
+                        <option value="BC">Back Crawl</option>
+                        <option value="BF">Butterfly</option>
+                        <option value="BS">Breast Stroke</option>
+                    </select>
+
+                    <label for="distance">Distance </label>
+                    <input name="distance" type="number" placeholder="Enter Distance">
+                </div>
+                <button type="submit" class="btn-primary btn">Search</button>
+                <a class="btn-secondary btn" href="{%url 'home:comp_detail' competition.id%}">Back</a>
+            </form>
+        </div>
+        <div class="card shadow p-3">
+            <div class="card-body">
+                <!-- Modal Trigger -->
+                <button type="button" class="btn btn-primary mt-2 w-100" data-toggle="modal" data-target="#raceModal">
+                    Add Race
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="raceModal" tabindex="-1" role="dialog" aria-labelledby="raceModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="raceModalLabel">Add Race</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" action="{%url 'home:comp_detail' competition.id%}">
+                                    {% csrf_token %}
+                                           
+                                    {{ race_form.as_p}}
+                        
+                                    <button class="btn btn-primary" type="submit" value="view" name="view">Save</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="card table-responsive">
+        {%if races.count > 0%}
+
+        <table class="table card-body table-striped mb-0 table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Distance</th>
+                    <th>Stroke Type</th>
+                    <th class="sortable">Age Range</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in races %}
+                <tr data-href='{{r.get_absolute_url}}'>
+                    <td>{{r.distance}}m</td>
+                    <td>{{r.strokeType}}</td>
+                    <td>{{r.age_range_lower}} - {{r.age_range_upper}}</td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        {%else%}
+        <p class="p-3 text-center">Sorry, there are no races matching the filters you entered.
+            <br>Please try again with different filters.
+        </p>
+        {%endif%}
+        <!-- allow user to sort by time and filter by date,distance and stroketype  -->
+    </div>
+</div>
+<script>
+    $(document).ready(function ($) {
+        $("tbody tr").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+{%endblock %}
