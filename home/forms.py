@@ -42,6 +42,7 @@ class CompForm(forms.ModelForm):
             'start_date': forms.SelectDateWidget(),
             'end_date': forms.SelectDateWidget(),
         }
+        
     def clean(self):
         super(CompForm, self).clean()
         start_date = self.cleaned_data.get('start_date')
