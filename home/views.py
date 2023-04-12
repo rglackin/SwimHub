@@ -18,7 +18,19 @@ from django.utils import timezone
 #----------------Home Page View
 class HomePageView(generic.TemplateView):
     template_name = "home/home.html"
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["noSwimmers"] = Swimmer.objects.all().count()
+        context["noTimes"]= SwimTime.objects.all().count()
+        nextComp = self.get_next_comp()
+        compDate = f"Start Date: {nextComp.start_date}"
+        context["nextComp"] = nextComp
+        context["compDate"]=compDate
+        return context
+    def get_next_comp(self):
+        today = timezone.datetime.today()
+        nextComp = Competition.objects.filter(start_date__gte=today).order_by("start_date").first()
+        return nextComp
 #----------------Swimmer List View
 class SwimmerListView(SingleTableView):
     model = Swimmer

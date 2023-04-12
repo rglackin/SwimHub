@@ -189,7 +189,7 @@ class PersonalBest(models.Model):
     
 class Competition(models.Model):
     comp_name  = models.CharField('Competition Name', max_length=50)
-    #TODO in future, address will be used with google maps api to display location of competition with a map -- LMAO idk bout this
+    #TODO in future, address will be used with google maps api to display location of competition with a map
     location = models.CharField('Competition Location',max_length=150)
     start_date = models.DateField()
     end_date = models.DateField()
