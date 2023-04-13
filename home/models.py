@@ -227,25 +227,24 @@ class Race(SwimmingInfo):
     def get_eligible_swimmers(self):
         all_swimmers = Swimmer.objects.all()
         swimmers = []
+        #Only gets swimmers in age range
         for swimmer in all_swimmers:
             age = swimmer.get_age               
             if age>=self.age_range_lower and age<=self.age_range_upper:
                 swimmers.append(swimmer.id)
         eligible_swimmers = Swimmer.objects.filter(id__in=swimmers)
-        #COMMENT Excludes any swimmers that are already entered in the race from selection on the form
+        #Excludes any swimmers that are already entered in the race from selection on the form
         eligible_swimmers = eligible_swimmers.exclude(id__in =self.swimmers.all())
         fastest_times = PersonalBest.objects.filter(
             swim_time__distance=self.distance,
             swim_time__strokeType=self.strokeType
         ).order_by('swim_time__time').values('swim_time__time', 'swim_time__swimmer')
         
+        #Orders eligible swimmers by fastest time
+        #OuterRef ensures only times with matching Primary Keys are filtered
         eligible_swimmers = eligible_swimmers.order_by(
             Subquery(fastest_times.filter(swimmer=OuterRef('pk')).values('swim_time__time')[:1]).asc(nulls_last= True)
         )
-        #for tim in fastest_times:
-
-            #print(f"\n{tim}\n--")
-        
         return eligible_swimmers
 
     def get_fastest_IM(self):

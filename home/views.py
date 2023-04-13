@@ -260,7 +260,7 @@ class RaceDetailView(generic.DetailView):
         #COMMENT Creates form, with the race being initially assigned to the current object
         
         form = LinkSwimmersToRaceForm(instance = self.race)
-        
+
         #COMMENT Updates the queryset of the swimmer field to contain only swimmers eligible for the race
         eligible_swimmers =self.race.get_eligible_swimmers()
         form.fields['swimmers'].queryset = eligible_swimmers
