@@ -242,9 +242,9 @@ class Race(SwimmingInfo):
         eligible_swimmers = eligible_swimmers.order_by(
             Subquery(fastest_times.filter(swimmer=OuterRef('pk')).values('swim_time__time')[:1]).asc(nulls_last= True)
         )
-        for tim in fastest_times:
+        #for tim in fastest_times:
 
-            print(f"\n{tim}\n--")
+            #print(f"\n{tim}\n--")
         
         return eligible_swimmers
 
